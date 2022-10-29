@@ -8,46 +8,35 @@
 import UIKit
 
 class TabBarViewController: UITabBarController {
-
-    var habitsViewController: UINavigationController!
-    var infoViewController: UINavigationController!
-    
+   
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViewTabBar()
         setupTabBar()
-        setupHabitsItem()
-        setupInfoItem()
+    }
+    
+    func setupViewTabBar() {
+        view.backgroundColor = .white
+        tabBar.layer.shadowColor = UIColor.lightGray.cgColor
+        tabBar.layer.shadowOpacity = 0.5
+        tabBar.layer.shadowOffset = CGSize.zero
+        tabBar.layer.shadowRadius = 5
+        tabBar.backgroundColor = UIColor.white
+        tabBar.tintColor = UIColor(red: 0.631, green: 0.086, blue: 0.8, alpha: 1)
+        tabBar.unselectedItemTintColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1)
     }
     
     func setupTabBar() {
-        habitsViewController = UINavigationController.init(rootViewController: HabitsViewController())
-        infoViewController = UINavigationController.init(rootViewController: InfoViewController())
-        self.viewControllers = [habitsViewController, infoViewController]
-        view.backgroundColor = .white
-        view.layer.backgroundColor = UIColor(red: 0.969, green: 0.969, blue: 0.969, alpha: 0.8).cgColor
+        let habitsViewController = createNavigationController(viewController: HabitsViewController(), title: "Привычки", imageName: "Glyph")
+        let infoViewController = createNavigationController(viewController: InfoViewController(), title: "Информация", imageName: "SF Symbol")
+        viewControllers = [habitsViewController, infoViewController]
     }
-    
-    func setupHabitsItem(){
-        
-        var button: UIButton = {
-            
-            let button = UIButton(frame: CGRect(x: (tabBar.frame.width / 4) - 23 / 2, y: self.tabBar.bounds.minY + 7, width: 23, height: 23))
-            button.backgroundColor = .green
-            return button
-        }()
-        tabBar.addSubview(button)
-        habitsViewController.tabBarItem.title = "Привычки"
-        habitsViewController.tabBarItem.image = UIImage(systemName: "info.circle.fill")
-        tabBar.tintColor = UIColor(red: 0.631, green: 0.086, blue: 0.8, alpha: 1)
-        tabBar.unselectedItemTintColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1)
+
+    func createNavigationController(viewController: UIViewController, title: String, imageName: String) -> UINavigationController {
+        let navigationController = UINavigationController(rootViewController: viewController)
+        let item = UITabBarItem(title: title, image: UIImage(named: imageName), tag: 0)
+        item.setTitleTextAttributes(TextAttributes.shared.tabBarAttributedString, for: .normal)
+        navigationController.tabBarItem = item
+        return navigationController
     }
-    
-    func setupInfoItem(){
-        infoViewController.tabBarItem.title = "Информация"
-        infoViewController.tabBarItem.image = UIImage(systemName: "info.circle.fill")
-        tabBar.tintColor = UIColor(red: 0.631, green: 0.086, blue: 0.8, alpha: 1)
-        tabBar.unselectedItemTintColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1)
-    }
-    
-    
 }

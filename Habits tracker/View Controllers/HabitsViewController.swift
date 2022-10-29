@@ -8,22 +8,39 @@
 import UIKit
 
 class HabitsViewController: UIViewController {
-
+    
+    private lazy var addButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "Symbol"), for: .normal)
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        setupView()
+        setupRightBarButton()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationItem.title = "Сегодня"
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
-    */
-
+    
+    func setupView() {
+        view.backgroundColor = UIColor(red: 0.949, green: 0.949, blue: 0.969, alpha: 1)
+        navigationController?.navigationBar.backgroundColor = .white
+    }
+    
+    func setupRightBarButton() {
+        let barButton = UIBarButtonItem(customView: addButton)
+        addButton.addTarget(self, action: #selector(pushHabitViewController), for: .touchUpInside)
+        navigationItem.rightBarButtonItems = [barButton]
+    }
+    
+    @objc func pushHabitViewController(){
+        let habitViewController = HabitViewController()
+        navigationItem.title = ""
+        self.navigationController?.pushViewController(habitViewController, animated: true)
+    }
 }

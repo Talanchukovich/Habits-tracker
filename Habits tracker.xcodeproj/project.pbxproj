@@ -16,6 +16,7 @@
 		80B77571290BCA6B0070F6F4 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B77570290BCA6B0070F6F4 /* InfoViewController.swift */; };
 		80B77573290BCC010070F6F4 /* HabitsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B77572290BCC010070F6F4 /* HabitsStore.swift */; };
 		80B77575290BCD350070F6F4 /* TextAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B77574290BCD340070F6F4 /* TextAttributes.swift */; };
+		80C9DCFF290D350500EA7DCE /* HabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C9DCFE290D350500EA7DCE /* HabitViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		80B77570290BCA6B0070F6F4 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		80B77572290BCC010070F6F4 /* HabitsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsStore.swift; sourceTree = "<group>"; };
 		80B77574290BCD340070F6F4 /* TextAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAttributes.swift; sourceTree = "<group>"; };
+		80C9DCFE290D350500EA7DCE /* HabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 			children = (
 				80B7756C290BC9AF0070F6F4 /* TabBarViewController.swift */,
 				80B7756E290BCA4C0070F6F4 /* HabitsViewController.swift */,
+				80C9DCFE290D350500EA7DCE /* HabitViewController.swift */,
 				80B77570290BCA6B0070F6F4 /* InfoViewController.swift */,
 			);
 			path = "View Controllers";
@@ -157,6 +160,7 @@
 				80B77573290BCC010070F6F4 /* HabitsStore.swift in Sources */,
 				80B77558290BC7C00070F6F4 /* AppDelegate.swift in Sources */,
 				80B77575290BCD350070F6F4 /* TextAttributes.swift in Sources */,
+				80C9DCFF290D350500EA7DCE /* HabitViewController.swift in Sources */,
 				80B7756D290BC9AF0070F6F4 /* TabBarViewController.swift in Sources */,
 				80B7755A290BC7C00070F6F4 /* SceneDelegate.swift in Sources */,
 				80B7756F290BCA4C0070F6F4 /* HabitsViewController.swift in Sources */,
@@ -303,6 +307,7 @@
 				INFOPLIST_FILE = "Habits tracker/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -330,6 +335,7 @@
 				INFOPLIST_FILE = "Habits tracker/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
