@@ -16,7 +16,6 @@ class TabBarViewController: UITabBarController {
     }
     
     func setupViewTabBar() {
-        view.backgroundColor = .white
         tabBar.layer.shadowColor = UIColor.lightGray.cgColor
         tabBar.layer.shadowOpacity = 0.5
         tabBar.layer.shadowOffset = CGSize.zero
@@ -35,7 +34,7 @@ class TabBarViewController: UITabBarController {
     func createNavigationController(viewController: UIViewController, title: String, imageName: String) -> UINavigationController {
         let navigationController = UINavigationController(rootViewController: viewController)
         let item = UITabBarItem(title: title, image: UIImage(named: imageName), tag: 0)
-        item.setTitleTextAttributes(TextAttributes.shared.tabBarAttributedString, for: .normal)
+        item.setTitleTextAttributes(TextAttributes.shared.tabBarAttributes, for: .normal)
         navigationController.tabBarItem = item
         return navigationController
     }
