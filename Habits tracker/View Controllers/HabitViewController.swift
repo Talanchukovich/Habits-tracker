@@ -12,10 +12,20 @@ class HabitViewController: UIViewController {
     private lazy var attributes = TextAttributes.shared
     private lazy var habitView = HabitView()
     
+    @available(iOS 14.0, *)
+    var habitPickerViewController: UIColorPickerViewController {
+        let vc = UIColorPickerViewController()
+        vc.delegate = self
+        vc.selectedColor = habitView.habitColor
+        vc.supportsAlpha = true
+        return vc
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupBarButtonItem()
+        presentHabitPickerViewController()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -41,14 +51,43 @@ class HabitViewController: UIViewController {
         let backBarButton = UIBarButtonItem(title: "Отменить", style: .done, target: self, action: #selector(cancell))
         backBarButton.setTitleTextAttributes(attributes.cancellBarButtonItemTitleAttributes, for: .normal)
         
-        let rightBarButtonItem = UIBarButtonItem(title: "Сохранить", style: .plain, target: nil, action: nil)
+        let rightBarButtonItem = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(save))
         rightBarButtonItem.setTitleTextAttributes(attributes.saveBarButtonItemTitleAttributes, for: .normal)
         
         navigationItem.leftBarButtonItem = backBarButton
         navigationItem.rightBarButtonItem = rightBarButtonItem
     }
     
+    func presentHabitPickerViewController() {
+        habitView.completion = {[weak self] in
+            guard let self else {return}
+            if #available(iOS 14.0, *) {
+                self.present(self.habitPickerViewController, animated: true)
+            }
+        }
+    }
+    
+    @objc func save() {
+        guard let name = habitView.habitName else {return}
+        guard let date = habitView.habitDate else {return}
+        let color = habitView.habitColor
+        let newHabit = Habit(name: name,
+                             date: date,
+                             color: color)
+        let store = HabitsStore.shared
+        store.habits.append(newHabit)
+        dismiss(animated: true)
+    }
+    
     @objc func cancell() {
         dismiss(animated: true)
     }
+}
+
+extension HabitViewController: UIColorPickerViewControllerDelegate {
+    @available(iOS 14.0, *)
+    func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
+        habitView.habitColor = viewController.selectedColor
+    }
+    
 }
