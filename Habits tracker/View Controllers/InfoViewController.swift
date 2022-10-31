@@ -16,8 +16,8 @@ class InfoViewController: UIViewController {
     
     func setupView() {
         view.backgroundColor = UIColor(red: 0.949, green: 0.949, blue: 0.969, alpha: 1)
-//        navigationController?.navigationBar.backgroundColor = .white
-//        navigationController?.navigationBar.titleTextAttributes = TextAttributes.shared.navigationTitleAttributedString
+        navigationController?.navigationBar.tintColor = .white
+        navigationController?.navigationBar.titleTextAttributes = TextAttributes.shared.navigationTitleAttributes
         navigationItem.title = "Информация"
     }
 }

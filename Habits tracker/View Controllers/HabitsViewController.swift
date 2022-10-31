@@ -22,9 +22,11 @@ class HabitsViewController: UIViewController {
     }
     
     func setupView() {
-        view.backgroundColor = UIColor(red: 0.949, green: 0.949, blue: 0.969, alpha: 1)
-        navigationController?.navigationBar.backgroundColor = .white
+        view.backgroundColor = .white
+        navigationController?.navigationBar.tintColor = .white
         navigationItem.title = "Сегодня"
+        
+       
     }
     
     func setupRightBarButton() {
