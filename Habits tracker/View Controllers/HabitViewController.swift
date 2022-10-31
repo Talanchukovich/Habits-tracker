@@ -9,6 +9,8 @@ import UIKit
 
 class HabitViewController: UIViewController {
     
+    var habitComplition: (()->Void)?
+    
     private lazy var attributes = TextAttributes.shared
     private lazy var habitView = HabitView()
     
@@ -69,14 +71,16 @@ class HabitViewController: UIViewController {
     
     @objc func save() {
         guard let name = habitView.habitName else {return}
-        guard let date = habitView.habitDate else {return}
+        let date = habitView.habitDate
         let color = habitView.habitColor
         let newHabit = Habit(name: name,
                              date: date,
                              color: color)
         let store = HabitsStore.shared
-        store.habits.append(newHabit)
-        dismiss(animated: true)
+        store.habits.insert(newHabit, at: 0)
+        dismiss(animated: true){
+            self.habitComplition?()
+        }
     }
     
     @objc func cancell() {
