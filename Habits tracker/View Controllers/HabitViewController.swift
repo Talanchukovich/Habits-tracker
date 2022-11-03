@@ -9,7 +9,7 @@ import UIKit
 
 class HabitViewController: UIViewController {
     
-    var habitComplition: (()->Void)?
+    var habitComplition: (()->Void)!
     
     private lazy var attributes = TextAttributes.shared
     private lazy var habitView = HabitView()
@@ -32,7 +32,6 @@ class HabitViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = false
-       
     }
     
     func setupView() {
@@ -77,14 +76,18 @@ class HabitViewController: UIViewController {
                              date: date,
                              color: color)
         let store = HabitsStore.shared
-        store.habits.insert(newHabit, at: 0)
-        dismiss(animated: true){
-            self.habitComplition?()
-        }
+        store.habits.append(newHabit)
+        dismiss(animated: true, completion: habitComplition)
     }
     
     @objc func cancell() {
         dismiss(animated: true)
+        loadView()
+//        {[weak self] in
+//            guard let self else {return}
+//            self.habitView.habitColor = HabitsStore.shared.habits.last?.color ?? .red
+//            self.habitView.habitTextField.text = ""
+//        }
     }
 }
 

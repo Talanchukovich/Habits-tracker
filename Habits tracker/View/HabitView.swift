@@ -18,36 +18,43 @@ class HabitView: UIView {
             habitColorPickerButton.backgroundColor = self.habitColor
         }
     }
-    
-    private lazy var leftPartDateLabelText = "Каждый день в "
-    
     private var datePickerDateString: String {
         dateFormatter.string(from: datePicker.date)
+    }
+    private var dateString: String {
+        "Каждый день в " + datePickerDateString
+    }
+    
+    private var attributeDateString: NSMutableAttributedString {
+        let str = NSMutableAttributedString(string: "Каждый день в " + datePickerDateString)
+        let location = dateString.count - datePickerDateString.count
+        let length = datePickerDateString.count
+        str.addAttributes(attributes.dateLabelAttributes, range: NSRange(location: location, length: length))
+        return str
     }
     
     private lazy var habitNameLabel: UILabel = {
         let label = UILabel()
-        label.attributedText = NSAttributedString(string: "НАЗВАНИЕ",
-                                                  attributes: attributes.habitLabelAttributes)
+        let text = "НАЗВАНИЕ"
+        label.attributedText = NSAttributedString(string: text, attributes: attributes.habitLabelAttributes)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
-    private lazy var habitTextField: UITextField = {
+    lazy var habitTextField: UITextField = {
         let texField = UITextField()
         texField.defaultTextAttributes = attributes.habitTextFieldTextlAttributes
-        texField.attributedPlaceholder = NSAttributedString(string: "Бегать по утрам, спать 8 часов и т.п",
-                                                            attributes: attributes.habitTextFieldPlaceHolderlAttributes)
+        let text = "Бегать по утрам, спать 8 часов и т.п"
+        texField.attributedPlaceholder = NSAttributedString(string: text, attributes: attributes.habitTextFieldPlaceHolderlAttributes)
         texField.delegate = self
-        texField.addTarget(self, action: #selector(setHabitName), for: .editingChanged)
         texField.translatesAutoresizingMaskIntoConstraints = false
         return texField
     }()
     
     private lazy var habitColorLabel: UILabel = {
         let label = UILabel()
-        label.attributedText = NSAttributedString(string: "ЦВЕТ",
-                                                  attributes: attributes.habitLabelAttributes)
+        let text = "ЦВЕТ"
+        label.attributedText = NSAttributedString(string: text, attributes: attributes.habitLabelAttributes)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -63,15 +70,19 @@ class HabitView: UIView {
     
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
-        label.attributedText = NSAttributedString(string: "ВРЕМЯ",
-                                                  attributes: attributes.habitLabelAttributes)
+        let text = "ВРЕМЯ"
+        label.attributedText = NSAttributedString(string: text, attributes: attributes.habitLabelAttributes)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var HabitDateLabel: UILabel = {
+    private lazy var habitDateLabel: UILabel = {
         let label = UILabel()
-        label.attributedText = createAttributedText(leftString: leftPartDateLabelText, rightString: datePickerDateString)
+        let attributedString = NSMutableAttributedString(string: dateString)
+        let location = dateString.count - datePickerDateString.count
+        let length = datePickerDateString.count
+        attributedString.addAttributes(attributes.dateLabelAttributes, range: NSRange(location: location, length: length))
+        label.attributedText = attributeDateString
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -100,16 +111,11 @@ class HabitView: UIView {
         super.init(frame: frame)
         createView()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func createAttributedText(leftString: String, rightString: String, attributes: [NSAttributedString.Key : Any]? = nil) -> NSMutableAttributedString {
-        let string = NSMutableAttributedString(string: leftString + rightString, attributes: attributes)
-        string.addAttributes(self.attributes.dateLabelAttributes, range: NSRange(location: leftString.count, length: rightString.count))
-        return string
-    }
     
     private func createView() {
         self.backgroundColor = .systemGray6
@@ -122,7 +128,7 @@ class HabitView: UIView {
         datePicker.addTarget(self, action: #selector(setHabitDate), for: .valueChanged)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
-        let mainViewes = [habitNameLabel, habitTextField, habitColorLabel, habitColorPickerButton, dateLabel, HabitDateLabel, datePicker]
+        let mainViewes = [habitNameLabel, habitTextField, habitColorLabel, habitColorPickerButton, dateLabel, habitDateLabel, datePicker]
         mainViewes.forEach({self.addSubview($0)})
         
         NSLayoutConstraint.activate([
@@ -143,23 +149,17 @@ class HabitView: UIView {
             dateLabel.topAnchor.constraint(equalTo: habitColorPickerButton.bottomAnchor, constant: 15),
             dateLabel.leadingAnchor.constraint(equalTo: habitColorPickerButton.leadingAnchor),
             
-            HabitDateLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 7),
-            HabitDateLabel.leadingAnchor.constraint(equalTo: dateLabel.leadingAnchor),
+            habitDateLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 7),
+            habitDateLabel.leadingAnchor.constraint(equalTo: dateLabel.leadingAnchor),
             
             datePicker.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 35),
             datePicker.centerXAnchor.constraint(equalTo: self.centerXAnchor)
         ])
     }
     
-    @objc func setHabitName() {
-        habitName = habitTextField.text
-    }
-    
     @objc func setHabitDate() {
-        let date = datePicker.date
-        habitDate = date
-        let newDate = dateFormatter.string(from: date)
-        HabitDateLabel.attributedText = createAttributedText(leftString: leftPartDateLabelText, rightString: newDate)
+        habitDate = datePicker.date
+        habitDateLabel.attributedText = attributeDateString
     }
     
     @objc func habitColorPickerButtonAction() {
@@ -179,5 +179,9 @@ extension HabitView: UITextFieldDelegate {
             return false
         }
         return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        habitName = habitTextField.text
     }
 }
