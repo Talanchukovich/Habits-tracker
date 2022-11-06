@@ -7,7 +7,7 @@
 
 import UIKit
 
-private func paragraphStyle(lineHeightMultiple: CGFloat) -> NSMutableParagraphStyle {
+public func paragraphStyle(lineHeightMultiple: CGFloat) -> NSMutableParagraphStyle {
     let style = NSMutableParagraphStyle()
     style.lineHeightMultiple = lineHeightMultiple
     return style
@@ -76,8 +76,7 @@ class TextAttributes {
     lazy var habitNameLabelCellAttributes = [NSAttributedString.Key
         .font: UIFont.systemFont(ofSize: 17, weight: .regular) as Any,
         .kern: -0.41,
-        .paragraphStyle: paragraphStyle(lineHeightMultiple: 1.08),
-                                             .foregroundColor: UIColor(red: 0.682, green: 0.682, blue: 0.698, alpha: 1)]
+        .paragraphStyle: paragraphStyle(lineHeightMultiple: 1.08)]
     
     lazy var habitDateLabelCellAttributes = [NSAttributedString.Key
         .font: UIFont.systemFont(ofSize: 12, weight: .regular) as Any,
@@ -89,4 +88,10 @@ class TextAttributes {
         .kern: -0.08,
         .paragraphStyle: paragraphStyle(lineHeightMultiple: 1.16),
         .foregroundColor: UIColor(red: 0.557, green: 0.557, blue: 0.576, alpha: 1)]
+    
+    lazy var deleteButtonAttributes = [NSAttributedString.Key
+        .font: UIFont.systemFont(ofSize: 17, weight: .regular) as Any,
+        .kern: -0.41,
+        .paragraphStyle: paragraphStyle(lineHeightMultiple: 1.1),
+        .foregroundColor: UIColor(red: 1, green: 0.231, blue: 0.188, alpha: 1)]
 }

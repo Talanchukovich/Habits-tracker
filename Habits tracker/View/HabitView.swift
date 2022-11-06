@@ -9,15 +9,25 @@ import UIKit
 
 class HabitView: UIView {
     
+    struct ViewModel {
+        var habitName: String
+        var habitDate: Date
+        var habitColor: UIColor
+        var buttonIsHidden: Bool
+    }
+    
+    let color = HabitsStore.shared.habits.last?.color
     let attributes = TextAttributes.shared
-    var completion: (()-> Void)?
+    var habitColorPickerCompletion: (()-> Void)?
+    var deleteButtonCompletion: (()-> Void)?
     var habitName: String?
-    var habitDate = Date()
-    var habitColor = HabitsStore.shared.habits.last?.color ?? .red {
+    var habitDate: Date?
+    var habitColor: UIColor? {
         didSet {
             habitColorPickerButton.backgroundColor = self.habitColor
         }
     }
+    
     private var datePickerDateString: String {
         dateFormatter.string(from: datePicker.date)
     }
@@ -40,15 +50,18 @@ class HabitView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
+    
     lazy var habitTextField: UITextField = {
-        let texField = UITextField()
-        texField.defaultTextAttributes = attributes.habitTextFieldTextlAttributes
+        let textField = UITextField()
+        textField.autocapitalizationType = .sentences
+        textField.clearButtonMode = .whileEditing
+        textField.defaultTextAttributes = attributes.habitTextFieldTextlAttributes
         let text = "Бегать по утрам, спать 8 часов и т.п"
-        texField.attributedPlaceholder = NSAttributedString(string: text, attributes: attributes.habitTextFieldPlaceHolderlAttributes)
-        texField.delegate = self
-        texField.translatesAutoresizingMaskIntoConstraints = false
-        return texField
+        textField.attributedPlaceholder = NSAttributedString(string: text, attributes: attributes.habitTextFieldPlaceHolderlAttributes)
+        textField.addTarget(self, action: #selector(setHabitName), for: .editingChanged)
+        textField.delegate = self
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
     }()
     
     private lazy var habitColorLabel: UILabel = {
@@ -88,19 +101,29 @@ class HabitView: UIView {
     }()
     
     private lazy var datePicker = UIDatePicker(frame: .zero)
-//        let datePicker = UIDatePicker()
-//        datePicker.datePickerMode = .time
-//        if #available(iOS 13.4, *) {
-//            datePicker.preferredDatePickerStyle = .wheels
-//        }
-//        guard let localId = Locale.preferredLanguages.first else {return}
-//        datePicker.locale = Locale(identifier: localId)
-//        datePicker.addTarget(self, action: #selector(setDate), for: .valueChanged)
-//        datePicker.translatesAutoresizingMaskIntoConstraints = false
-//        return datePicker
-//    }()
+    //        let datePicker = UIDatePicker()
+    //        datePicker.datePickerMode = .time
+    //        if #available(iOS 13.4, *) {
+    //            datePicker.preferredDatePickerStyle = .wheels
+    //        }
+    //        guard let localId = Locale.preferredLanguages.first else {return}
+    //        datePicker.locale = Locale(identifier: localId)
+    //        datePicker.addTarget(self, action: #selector(setDate), for: .valueChanged)
+    //        datePicker.translatesAutoresizingMaskIntoConstraints = false
+    //        return datePicker
+    //    }()
     
-     lazy var dateFormatter: DateFormatter = {
+    private lazy var deleteButton: UIButton = {
+        let button = UIButton()
+        let attributedTitle = NSAttributedString(string: "Удалить привычку", attributes: attributes.deleteButtonAttributes)
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.isHidden = true
+        button.addTarget(self, action: #selector(deleteButtonAction), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ru_RU")
         formatter.timeStyle = .short
@@ -109,15 +132,22 @@ class HabitView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        createView()
+        setupView()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func updateViewModel(viewModel: ViewModel) {
+        self.habitTextField.text = viewModel.habitName
+        self.habitColor = viewModel.habitColor
+        self.datePicker.date = viewModel.habitDate
+        habitDateLabel.attributedText = attributeDateString
+        deleteButton.isHidden = viewModel.buttonIsHidden
+    }
     
-    private func createView() {
+    func setupView() {
         self.backgroundColor = .systemGray6
         self.translatesAutoresizingMaskIntoConstraints = false
         datePicker.datePickerMode = .time
@@ -128,16 +158,17 @@ class HabitView: UIView {
         datePicker.addTarget(self, action: #selector(setHabitDate), for: .valueChanged)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
-        let mainViewes = [habitNameLabel, habitTextField, habitColorLabel, habitColorPickerButton, dateLabel, habitDateLabel, datePicker]
+        let mainViewes = [habitNameLabel, habitTextField, habitColorLabel, habitColorPickerButton, dateLabel, habitDateLabel, datePicker, deleteButton]
         mainViewes.forEach({self.addSubview($0)})
         
         NSLayoutConstraint.activate([
             habitNameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 21),
             habitNameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-        
+            
             habitTextField.topAnchor.constraint(equalTo: habitNameLabel.bottomAnchor, constant: 7),
             habitTextField.leadingAnchor.constraint(equalTo: habitNameLabel.leadingAnchor),
-        
+            habitTextField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -15),
+            
             habitColorLabel.topAnchor.constraint(equalTo: habitTextField.bottomAnchor, constant: 15),
             habitColorLabel.leadingAnchor.constraint(equalTo: habitTextField.leadingAnchor),
             
@@ -153,7 +184,10 @@ class HabitView: UIView {
             habitDateLabel.leadingAnchor.constraint(equalTo: dateLabel.leadingAnchor),
             
             datePicker.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 35),
-            datePicker.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+            datePicker.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            
+            deleteButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -18),
+            deleteButton.centerXAnchor.constraint(equalTo: self.centerXAnchor)
         ])
     }
     
@@ -162,13 +196,22 @@ class HabitView: UIView {
         habitDateLabel.attributedText = attributeDateString
     }
     
+    @objc func setHabitName() {
+        habitName = habitTextField.text
+    }
+    
     @objc func habitColorPickerButtonAction() {
         habitTextField.resignFirstResponder()
-        completion?()
+        habitColorPickerCompletion?()
+    }
+    
+    @objc func deleteButtonAction() {
+        deleteButtonCompletion?()
     }
 }
 
 extension HabitView: UITextFieldDelegate {
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -179,9 +222,5 @@ extension HabitView: UITextFieldDelegate {
             return false
         }
         return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        habitName = habitTextField.text
     }
 }

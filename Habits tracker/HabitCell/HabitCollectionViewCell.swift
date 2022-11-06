@@ -9,15 +9,17 @@ import UIKit
 
 class HabitCollectionViewCell: UICollectionViewCell {
     let attributes = TextAttributes.shared
+    var comletisionToHabitsVC: (()->Void)?
     
     struct ViewModel {
         var name: String
         var date: Date
         var color: UIColor
         var count: Int
+        var isAlreadyTakenToday: Bool
     }
     
-    private lazy var habitNameLabel: UILabel = {
+    lazy var habitNameLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -41,6 +43,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
         button.layer.cornerRadius = 18
         button.layer.borderWidth = 2
         button.setImage(UIImage(named: "check"), for: .normal)
+        button.addTarget(self, action: #selector(trackHabit), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -55,14 +58,26 @@ class HabitCollectionViewCell: UICollectionViewCell {
     }
     
     func updateView(viewModel: ViewModel) {
-        habitNameLabel.attributedText = NSAttributedString(string: viewModel.name,
-                                                           attributes: attributes.habitNameLabelCellAttributes)
-        habitDateLabel.attributedText = NSAttributedString(string: "Каждый день в " + attributes.dateFormatter.string(from: viewModel.date),
-                                                           attributes: attributes.habitDateLabelCellAttributes)
-        countHabitLabel.attributedText = NSAttributedString(string: "Счетчик: \(viewModel.count)",
-                                                            attributes: attributes.habitCountLabelCellAttributes)
+        let habitNameLabelAttributes = [NSAttributedString.Key.font: UIFont
+            .systemFont(ofSize: 17, weight: .regular) as Any,
+            .kern: -0.41,
+            .paragraphStyle: paragraphStyle(lineHeightMultiple: 1.08),
+            .foregroundColor: viewModel.color]
+        let habitName = NSAttributedString(string: viewModel.name,
+                                           attributes: habitNameLabelAttributes)
+        let habitDate = NSAttributedString(string: "Каждый день в " + attributes.dateFormatter.string(from: viewModel.date),
+                                           attributes: attributes.habitDateLabelCellAttributes)
+        let countHabit = NSAttributedString(string: "Счетчик: \(viewModel.count)",
+                                            attributes: attributes.habitCountLabelCellAttributes)
+        var  habitCircleButtonBackgroundColor: UIColor {
+            viewModel.isAlreadyTakenToday == true ? viewModel.color : .white
+        }
+        habitNameLabel.attributedText = habitName
+        habitDateLabel.attributedText = habitDate
+        countHabitLabel.attributedText = countHabit
         habitCircleButton.layer.borderColor = viewModel.color.cgColor
-    }
+        habitCircleButton.backgroundColor = habitCircleButtonBackgroundColor
+        }
     
     func setView() {
         self.backgroundColor = .white
@@ -85,5 +100,13 @@ class HabitCollectionViewCell: UICollectionViewCell {
             habitCircleButton.widthAnchor.constraint(equalToConstant: 36),
             habitCircleButton.heightAnchor.constraint(equalToConstant: 36)
         ])
+    }
+    
+    override func prepareForReuse() {
+        
+    }
+    
+    @objc func trackHabit() {
+       comletisionToHabitsVC?()
     }
 }

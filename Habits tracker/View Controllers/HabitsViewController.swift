@@ -9,9 +9,6 @@ import UIKit
 
 class HabitsViewController: UIViewController {
     
-    let habitViewController = UINavigationController(rootViewController: HabitViewController())
-    let habitViewControlle1 = HabitViewController()
-    
     lazy var layout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -40,10 +37,7 @@ class HabitsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = true
-        habitViewControlle1.habitComplition = {
-            self.habitsCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
-            self.habitsCollectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
-        }
+        habitsCollectionView.reloadData()
     }
     
     func setupView() {
@@ -68,6 +62,7 @@ class HabitsViewController: UIViewController {
     }
     
     @objc func pushHabitViewController(){
+        let habitViewController = UINavigationController(rootViewController: HabitViewController(habitMode: .addind))
         habitViewController.modalPresentationStyle = .fullScreen
         self.present(habitViewController, animated: true)
     }
@@ -83,18 +78,35 @@ extension HabitsViewController: UICollectionViewDataSource, UICollectionViewDele
             let cell = habitsCollectionView.dequeueReusableCell(withReuseIdentifier: "HabitCollectionViewCell", for: indexPath)
             return cell
         }
+        
         let habit = HabitsStore.shared.habits[indexPath.row]
         let habitViewModel = HabitCollectionViewCell.ViewModel(name: habit.name,
                                                                date: habit.date,
                                                                color: habit.color,
-                                                               count: habit.trackDates.count)
+                                                               count: habit.trackDates.count,
+                                                               isAlreadyTakenToday: habit.isAlreadyTakenToday)
         
         cell.updateView(viewModel: habitViewModel)
+        cell.comletisionToHabitsVC = {[weak self] in
+            if habit.isAlreadyTakenToday == false {
+                HabitsStore.shared.track(habit)
+                cell.habitCircleButton.backgroundColor = habit.color
+                self?.habitsCollectionView.reloadData()
+            }
+        }
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = UIScreen.main.bounds.width - layout.sectionInset.left * 2
         return CGSize(width: width, height: 130)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let item = collectionView.cellForItem(at: indexPath) as? HabitCollectionViewCell else {return}
+        let habit = HabitsStore.shared.habits[indexPath.row]
+        let habitDetailsViewController = UINavigationController(rootViewController: HabitDetailsViewController(navigationTitle: item.habitNameLabel.text ?? "", habit: habit, indexPax: indexPath))
+        habitDetailsViewController.modalPresentationStyle = .fullScreen
+        self.present(habitDetailsViewController, animated: true)
     }
 }
