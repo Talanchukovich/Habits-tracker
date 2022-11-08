@@ -10,7 +10,7 @@ import UIKit
 class HabitDetailsViewController: UIViewController {
     
     private var navigationTitle: String?
-    private var habit: Habit?
+    var habit: Habit?
     private var indexPax: IndexPath?
     private lazy var attributes = TextAttributes.shared
     private lazy var habitDetailsTableView: UITableView = {
@@ -95,5 +95,9 @@ extension HabitDetailsViewController: UITableViewDelegate, UITableViewDataSource
         let viewModel = HabitDetailsTableViewCell.ViewModel(dateLabelText: dateString, isHidden: isHidden)
         cell.setupView(viewModel: viewModel)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }

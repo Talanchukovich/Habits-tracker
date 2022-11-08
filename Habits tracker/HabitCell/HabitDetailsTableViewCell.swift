@@ -43,7 +43,7 @@ class HabitDetailsTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             dateLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             dateLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-        
+            
             checkView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -14),
             checkView.centerYAnchor.constraint(equalTo: self.centerYAnchor)])
     }

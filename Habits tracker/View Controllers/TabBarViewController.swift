@@ -8,7 +8,7 @@
 import UIKit
 
 class TabBarViewController: UITabBarController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewTabBar()
@@ -30,7 +30,7 @@ class TabBarViewController: UITabBarController {
         let infoViewController = createNavigationController(viewController: InfoViewController(), title: "Информация", imageName: "SF Symbol")
         viewControllers = [habitsViewController, infoViewController]
     }
-
+    
     func createNavigationController(viewController: UIViewController, title: String, imageName: String) -> UINavigationController {
         let navigationController = UINavigationController(rootViewController: viewController)
         let item = UITabBarItem(title: title, image: UIImage(named: imageName), tag: 0)

@@ -10,19 +10,17 @@ import UIKit
 class HabitView: UIView {
     
     struct ViewModel {
-        var habitName: String
-        var habitDate: Date
-        var habitColor: UIColor
+        var habit: Habit
         var buttonIsHidden: Bool
     }
     
-    let color = HabitsStore.shared.habits.last?.color
     let attributes = TextAttributes.shared
     var habitColorPickerCompletion: (()-> Void)?
+    var habitColorPickerCompletion2: (()-> Void)?
     var deleteButtonCompletion: (()-> Void)?
     var habitName: String?
-    var habitDate: Date?
-    var habitColor: UIColor? {
+    var habitDate = Date()
+    var habitColor = HabitsStore.shared.habits.last?.color ?? .red {
         didSet {
             habitColorPickerButton.backgroundColor = self.habitColor
         }
@@ -101,17 +99,6 @@ class HabitView: UIView {
     }()
     
     private lazy var datePicker = UIDatePicker(frame: .zero)
-    //        let datePicker = UIDatePicker()
-    //        datePicker.datePickerMode = .time
-    //        if #available(iOS 13.4, *) {
-    //            datePicker.preferredDatePickerStyle = .wheels
-    //        }
-    //        guard let localId = Locale.preferredLanguages.first else {return}
-    //        datePicker.locale = Locale(identifier: localId)
-    //        datePicker.addTarget(self, action: #selector(setDate), for: .valueChanged)
-    //        datePicker.translatesAutoresizingMaskIntoConstraints = false
-    //        return datePicker
-    //    }()
     
     private lazy var deleteButton: UIButton = {
         let button = UIButton()
@@ -133,6 +120,7 @@ class HabitView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        setupDatePicker()
     }
     
     required init?(coder: NSCoder) {
@@ -140,16 +128,15 @@ class HabitView: UIView {
     }
     
     func updateViewModel(viewModel: ViewModel) {
-        self.habitTextField.text = viewModel.habitName
-        self.habitColor = viewModel.habitColor
-        self.datePicker.date = viewModel.habitDate
-        habitDateLabel.attributedText = attributeDateString
+        habitName = viewModel.habit.name
+        habitTextField.text = habitName
+        habitColor = viewModel.habit.color
+        datePicker.date = viewModel.habit.date
         deleteButton.isHidden = viewModel.buttonIsHidden
+        setHabitDate()
     }
     
-    func setupView() {
-        self.backgroundColor = .systemGray6
-        self.translatesAutoresizingMaskIntoConstraints = false
+    func setupDatePicker() {
         datePicker.datePickerMode = .time
         if #available(iOS 13.4, *) {
             datePicker.preferredDatePickerStyle = .wheels
@@ -157,7 +144,11 @@ class HabitView: UIView {
         datePicker.locale = Locale(identifier: "ru_RU")
         datePicker.addTarget(self, action: #selector(setHabitDate), for: .valueChanged)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
-        
+    }
+    
+    func setupView() {
+        self.backgroundColor = .systemGray6
+        self.translatesAutoresizingMaskIntoConstraints = false
         let mainViewes = [habitNameLabel, habitTextField, habitColorLabel, habitColorPickerButton, dateLabel, habitDateLabel, datePicker, deleteButton]
         mainViewes.forEach({self.addSubview($0)})
         
@@ -207,6 +198,7 @@ class HabitView: UIView {
     
     @objc func deleteButtonAction() {
         deleteButtonCompletion?()
+        habitColorPickerCompletion2?()
     }
 }
 

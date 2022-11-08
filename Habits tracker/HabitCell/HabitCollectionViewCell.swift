@@ -9,7 +9,7 @@ import UIKit
 
 class HabitCollectionViewCell: UICollectionViewCell {
     let attributes = TextAttributes.shared
-    var comletisionToHabitsVC: (()->Void)?
+    var trackHabitComletision: (()->Void)?
     
     struct ViewModel {
         var name: String
@@ -60,9 +60,9 @@ class HabitCollectionViewCell: UICollectionViewCell {
     func updateView(viewModel: ViewModel) {
         let habitNameLabelAttributes = [NSAttributedString.Key.font: UIFont
             .systemFont(ofSize: 17, weight: .regular) as Any,
-            .kern: -0.41,
-            .paragraphStyle: paragraphStyle(lineHeightMultiple: 1.08),
-            .foregroundColor: viewModel.color]
+                                        .kern: -0.41,
+                                        .paragraphStyle: paragraphStyle(lineHeightMultiple: 1.08),
+                                        .foregroundColor: viewModel.color]
         let habitName = NSAttributedString(string: viewModel.name,
                                            attributes: habitNameLabelAttributes)
         let habitDate = NSAttributedString(string: "Каждый день в " + attributes.dateFormatter.string(from: viewModel.date),
@@ -77,9 +77,9 @@ class HabitCollectionViewCell: UICollectionViewCell {
         countHabitLabel.attributedText = countHabit
         habitCircleButton.layer.borderColor = viewModel.color.cgColor
         habitCircleButton.backgroundColor = habitCircleButtonBackgroundColor
-        }
+    }
     
-    func setView() {
+    private func setView() {
         self.backgroundColor = .white
         let viewes = [habitNameLabel, habitDateLabel, countHabitLabel, habitCircleButton]
         viewes.forEach{self.addSubview($0)}
@@ -88,10 +88,10 @@ class HabitCollectionViewCell: UICollectionViewCell {
             habitNameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 20),
             habitNameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             habitNameLabel.widthAnchor.constraint(equalToConstant: 220),
-        
+            
             habitDateLabel.topAnchor.constraint(equalTo: habitNameLabel.bottomAnchor, constant: 4),
             habitDateLabel.leadingAnchor.constraint(equalTo: habitNameLabel.leadingAnchor),
-        
+            
             countHabitLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
             countHabitLabel.leadingAnchor.constraint(equalTo: habitNameLabel.leadingAnchor),
             
@@ -103,10 +103,14 @@ class HabitCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-        
+        habitNameLabel.text = nil
+        habitDateLabel.text = nil
+        countHabitLabel.text = nil
+        habitCircleButton.backgroundColor = nil
     }
     
     @objc func trackHabit() {
-       comletisionToHabitsVC?()
+        trackHabitComletision?()
+        
     }
 }

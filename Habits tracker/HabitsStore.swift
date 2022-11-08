@@ -111,7 +111,7 @@ public final class HabitsStore {
         guard let startDate = userDefaults.object(forKey: "start_date") as? Date else {
             return []
         }
-        return Date.dates(from: startDate, to: .init())
+        return Date.dates(from: startDate, to: .init()).reversed()
     }
     
     /// Возвращает значение от 0 до 1.
@@ -204,7 +204,7 @@ private extension Date {
     static func dates(from fromDate: Date, to toDate: Date) -> [Date] {
         var dates: [Date] = []
         var date = fromDate
-
+        
         while date <= toDate {
             dates.append(date)
             guard let newDate = Calendar.current.date(byAdding: .day, value: 1, to: date) else {

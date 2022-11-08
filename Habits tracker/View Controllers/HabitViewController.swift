@@ -9,7 +9,8 @@ import UIKit
 
 class HabitViewController: UIViewController {
     
-    var habitMode: HabitMode?
+    var dismisHabitDetailsComlition: (()->Void)?
+    var habitMode: HabitViewMode?
     var habit: Habit?
     var indexPath: IndexPath?
     private lazy var attributes = TextAttributes.shared
@@ -19,19 +20,19 @@ class HabitViewController: UIViewController {
     var habitPickerViewController: UIColorPickerViewController {
         let vc = UIColorPickerViewController()
         vc.delegate = self
-        vc.selectedColor = habitView.habitColor ?? .red
+        vc.selectedColor = habitView.habitColor
         vc.supportsAlpha = true
         return vc
     }
     
-    convenience init(habitMode: HabitMode, habit: Habit, indexPath: IndexPath) {
+    convenience init(habitMode: HabitViewMode, habit: Habit, indexPath: IndexPath) {
         self.init(nibName: nil, bundle: nil)
         self.habitMode = habitMode
-        self.indexPath = indexPath
         self.habit = habit
+        self.indexPath = indexPath
     }
     
-    convenience init(habitMode: HabitMode) {
+    convenience init(habitMode: HabitViewMode) {
         self.init(nibName: nil, bundle: nil)
         self.habitMode = habitMode
     }
@@ -49,7 +50,7 @@ class HabitViewController: UIViewController {
         view.backgroundColor = .white
         navigationController?.navigationBar.tintColor = .white
         navigationController?.navigationBar.titleTextAttributes = attributes.navigationTitleAttributes
-        navigationItem.title = "Создать"
+        navigationItem.title = habitMode == .addind ? "Создать" : "Править"
         
         let backBarButton = UIBarButtonItem(title: "Отменить", style: .done, target: self, action: #selector(cancell))
         backBarButton.setTitleTextAttributes(attributes.cancellBarButtonItemTitleAttributes, for: .normal)
@@ -71,18 +72,11 @@ class HabitViewController: UIViewController {
     }
     
     func updateHabitView() {
-        let color = HabitsStore.shared.habits.last?.color
-        var viewModel: HabitView.ViewModel
-        switch habitMode {
-        case .addind:
-            viewModel = HabitView.ViewModel(habitName: "", habitDate: Date(), habitColor: color ?? .red, buttonIsHidden: true)
-        case .editing:
+        if habitMode == .editing {
             guard let habit else {return}
-            viewModel = HabitView.ViewModel(habitName: habit.name, habitDate: habit.date, habitColor: habit.color, buttonIsHidden: false)
-        case .none:
-            return
+            let viewModel = HabitView.ViewModel(habit: habit, buttonIsHidden: false)
+            habitView.updateViewModel(viewModel: viewModel)
         }
-        habitView.updateViewModel(viewModel: viewModel)
     }
     
     func presentHabitPickerViewController() {
@@ -98,31 +92,51 @@ class HabitViewController: UIViewController {
         habitView.deleteButtonCompletion = {[weak self] in
             guard let self else {return}
             guard let indexPath = self.indexPath else {return}
-            HabitsStore.shared.habits.remove(at: indexPath.row)
-            self.dismiss(animated: true)
+            let habitName = HabitsStore.shared.habits[indexPath.row].name
+            let alert = UIAlertController(title: "Удалить привычку", message: "Вы хотите удалить привычку \"\(habitName)\"?", preferredStyle: .alert)
+            self.present(alert, animated: true)
+            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel){_ in
+                alert.dismiss(animated: true)
+            }
+            let deleteAction = UIAlertAction(title:  "Удалить", style: .destructive) {_ in
+                HabitsStore.shared.habits.remove(at: indexPath.row)
+                self.dismisHabitDetailsComlition?()
+                self.navigationController?.dismiss(animated: true)
+            }
+            alert.addAction(cancelAction)
+            alert.addAction(deleteAction)
         }
-       
     }
     
     @objc func save() {
-        guard let name = habitView.habitName else {return}
-        guard let date = habitView.habitDate else {return}
-        guard let color = habitView.habitColor else {return}
+        guard let name = habitView.habitName else {
+            let alert = UIAlertController(title: "Не заполнено поле", message: "Заполните поле название", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Ок", style: .cancel){_ in
+                alert.dismiss(animated: true)
+                self.habitView.habitTextField.becomeFirstResponder()
+            }
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true)
+            return
+        }
+        let date = habitView.habitDate
+        let color = habitView.habitColor
         let newHabit = Habit(name: name, date: date, color: color)
+        
         switch habitMode {
         case .addind:
             HabitsStore.shared.habits.append(newHabit)
         case .editing:
             guard let indexPath else {return}
-            HabitsStore.shared.habits.remove(at: indexPath.row)
-            HabitsStore.shared.habits.insert(newHabit, at: indexPath.row)
+            HabitsStore.shared.habits[indexPath.row].name = name
+            HabitsStore.shared.habits[indexPath.row].date = date
+            HabitsStore.shared.habits[indexPath.row].color = color
         case .none:
             return
         }
-            dismiss(animated: true) {[weak self] in
-                self?.habitView.habitTextField.text?.removeAll()
-            }
-
+        dismiss(animated: true) {[weak self] in
+            self?.habitView.habitTextField.text?.removeAll()
+        }
     }
     
     @objc func cancell() {

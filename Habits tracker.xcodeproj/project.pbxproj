@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8010B02729182E4F00A3A814 /* HabitMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010B02629182E4F00A3A814 /* HabitMode.swift */; };
+		8010B02729182E4F00A3A814 /* HabitViewMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010B02629182E4F00A3A814 /* HabitViewMode.swift */; };
+		8010B02929193D7000A3A814 /* ProgressCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010B02829193D7000A3A814 /* ProgressCollectionViewCell.swift */; };
 		805346EB290FD41C00DF41D2 /* HabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805346EA290FD41C00DF41D2 /* HabitView.swift */; };
 		80B77558290BC7C00070F6F4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B77557290BC7C00070F6F4 /* AppDelegate.swift */; };
 		80B7755A290BC7C00070F6F4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B77559290BC7C00070F6F4 /* SceneDelegate.swift */; };
@@ -25,7 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8010B02629182E4F00A3A814 /* HabitMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitMode.swift; sourceTree = "<group>"; };
+		8010B02629182E4F00A3A814 /* HabitViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewMode.swift; sourceTree = "<group>"; };
+		8010B02829193D7000A3A814 /* ProgressCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCollectionViewCell.swift; sourceTree = "<group>"; };
 		805346EA290FD41C00DF41D2 /* HabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitView.swift; sourceTree = "<group>"; };
 		80B77554290BC7C00070F6F4 /* Habits tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Habits tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		80B77557290BC7C00070F6F4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 		805346E9290FD3F400DF41D2 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				8010B02629182E4F00A3A814 /* HabitViewMode.swift */,
 				805346EA290FD41C00DF41D2 /* HabitView.swift */,
 			);
 			path = View;
@@ -102,9 +105,8 @@
 				80B7756C290BC9AF0070F6F4 /* TabBarViewController.swift */,
 				80B7756E290BCA4C0070F6F4 /* HabitsViewController.swift */,
 				80C9DCFE290D350500EA7DCE /* HabitViewController.swift */,
-				80B77570290BCA6B0070F6F4 /* InfoViewController.swift */,
 				80BE78A8291457FF004578D9 /* HabitDetailsViewController.swift */,
-				8010B02629182E4F00A3A814 /* HabitMode.swift */,
+				80B77570290BCA6B0070F6F4 /* InfoViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -113,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				80BE78A62910405C004578D9 /* HabitCollectionViewCell.swift */,
+				8010B02829193D7000A3A814 /* ProgressCollectionViewCell.swift */,
 				80BE78AA2914686A004578D9 /* HabitDetailsTableViewCell.swift */,
 			);
 			path = HabitCell;
@@ -134,8 +137,6 @@
 			dependencies = (
 			);
 			name = "Habits tracker";
-			packageProductDependencies = (
-			);
 			productName = "Habits tracker";
 			productReference = 80B77554290BC7C00070F6F4 /* Habits tracker.app */;
 			productType = "com.apple.product-type.application";
@@ -156,7 +157,7 @@
 				};
 			};
 			buildConfigurationList = 80B7754F290BC7C00070F6F4 /* Build configuration list for PBXProject "Habits tracker" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -164,8 +165,6 @@
 				Base,
 			);
 			mainGroup = 80B7754B290BC7C00070F6F4;
-			packageReferences = (
-			);
 			productRefGroup = 80B77555290BC7C00070F6F4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -202,9 +201,10 @@
 				80B7755A290BC7C00070F6F4 /* SceneDelegate.swift in Sources */,
 				80B7756F290BCA4C0070F6F4 /* HabitsViewController.swift in Sources */,
 				80B77571290BCA6B0070F6F4 /* InfoViewController.swift in Sources */,
+				8010B02929193D7000A3A814 /* ProgressCollectionViewCell.swift in Sources */,
 				80BE78A72910405C004578D9 /* HabitCollectionViewCell.swift in Sources */,
 				80BE78AB2914686A004578D9 /* HabitDetailsTableViewCell.swift in Sources */,
-				8010B02729182E4F00A3A814 /* HabitMode.swift in Sources */,
+				8010B02729182E4F00A3A814 /* HabitViewMode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
