@@ -9,9 +9,11 @@ import UIKit
 
 class HabitDetailsViewController: UIViewController {
     
+    let habitViewController = HabitViewController()
+    
     private var navigationTitle: String?
-    var habit: Habit?
-    private var indexPax: IndexPath?
+    private var habit: Habit?
+    
     private lazy var attributes = TextAttributes.shared
     private lazy var habitDetailsTableView: UITableView = {
         let tableView = UITableView()
@@ -23,11 +25,10 @@ class HabitDetailsViewController: UIViewController {
         return tableView
     }()
     
-    convenience init(navigationTitle: String, habit: Habit, indexPax: IndexPath) {
+    convenience init(habit: Habit) {
         self.init(nibName: nil, bundle: nil)
-        self.navigationTitle = navigationTitle
+        self.navigationTitle = habit.name
         self.habit = habit
-        self.indexPax = indexPax
     }
     
     override func viewDidLoad() {
@@ -49,10 +50,8 @@ class HabitDetailsViewController: UIViewController {
         let arrowBackBarButton = UIBarButtonItem(customView: UIImageView(image: UIImage(named: "Arrow")))
         let textBackBarButton = UIBarButtonItem(title: "Сегодня", style: .done, target: self, action: #selector(cancel))
         textBackBarButton.setTitleTextAttributes(attributes.cancellBarButtonItemTitleAttributes, for: .normal)
-        
-        let rightBarButton = UIBarButtonItem(title: "Править", style: .done, target: self, action: #selector(pushHabitViewController))
+        let rightBarButton = UIBarButtonItem(title: "Править", style: .done, target: self, action: #selector(editHabit))
         rightBarButton.setTitleTextAttributes(attributes.cancellBarButtonItemTitleAttributes, for: .normal)
-        
         navigationItem.leftBarButtonItems = [arrowBackBarButton, textBackBarButton]
         navigationItem.rightBarButtonItem = rightBarButton
     }
@@ -67,15 +66,16 @@ class HabitDetailsViewController: UIViewController {
             habitDetailsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)])
     }
     
-    @objc func pushHabitViewController(){
-        guard let habit, let indexPax else {return}
-        let habitViewController = UINavigationController(rootViewController: HabitViewController(habitMode: .editing, habit: habit, indexPath: indexPax))
+    @objc func editHabit(){
+        guard let habit else {return}
+        habitViewController = 
+//        let habitViewController = UINavigationController(rootViewController: HabitViewController(habitMode: .editing(habit)))
         habitViewController.modalPresentationStyle = .fullScreen
         self.present(habitViewController, animated: true)
     }
     
     @objc func cancel(){
-        dismiss(animated: true)
+        navigationController?.popViewController(animated: true)
     }
 }
 

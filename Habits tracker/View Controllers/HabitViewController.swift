@@ -9,10 +9,9 @@ import UIKit
 
 class HabitViewController: UIViewController {
     
-    var dismisHabitDetailsComlition: (()->Void)?
-    var habitMode: HabitViewMode?
-    var habit: Habit?
-    var indexPath: IndexPath?
+    private var dismisHabitDetailsComlition: (()->Void)?
+    private var habitMode: HabitViewMode?
+    private var habit: Habit?
     private lazy var attributes = TextAttributes.shared
     private lazy var habitView = HabitView()
     
@@ -23,13 +22,6 @@ class HabitViewController: UIViewController {
         vc.selectedColor = habitView.habitColor
         vc.supportsAlpha = true
         return vc
-    }
-    
-    convenience init(habitMode: HabitViewMode, habit: Habit, indexPath: IndexPath) {
-        self.init(nibName: nil, bundle: nil)
-        self.habitMode = habitMode
-        self.habit = habit
-        self.indexPath = indexPath
     }
     
     convenience init(habitMode: HabitViewMode) {
@@ -55,7 +47,7 @@ class HabitViewController: UIViewController {
         let backBarButton = UIBarButtonItem(title: "Отменить", style: .done, target: self, action: #selector(cancell))
         backBarButton.setTitleTextAttributes(attributes.cancellBarButtonItemTitleAttributes, for: .normal)
         
-        let rightBarButtonItem = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(save))
+        let rightBarButtonItem = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(saveHabit))
         rightBarButtonItem.setTitleTextAttributes(attributes.saveBarButtonItemTitleAttributes, for: .normal)
         
         navigationItem.leftBarButtonItem = backBarButton
@@ -72,8 +64,8 @@ class HabitViewController: UIViewController {
     }
     
     func updateHabitView() {
-        if habitMode == .editing {
-            guard let habit else {return}
+        if case .editing(let habit) = habitMode {
+            self.habit = habit
             let viewModel = HabitView.ViewModel(habit: habit, buttonIsHidden: false)
             habitView.updateViewModel(viewModel: viewModel)
         }
@@ -90,25 +82,21 @@ class HabitViewController: UIViewController {
     
     func deleteHabit() {
         habitView.deleteButtonCompletion = {[weak self] in
-            guard let self else {return}
-            guard let indexPath = self.indexPath else {return}
-            let habitName = HabitsStore.shared.habits[indexPath.row].name
+            
+            guard let habitName = self?.habit?.name else {return}
             let alert = UIAlertController(title: "Удалить привычку", message: "Вы хотите удалить привычку \"\(habitName)\"?", preferredStyle: .alert)
-            self.present(alert, animated: true)
-            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel){_ in
-                alert.dismiss(animated: true)
-            }
-            let deleteAction = UIAlertAction(title:  "Удалить", style: .destructive) {_ in
-                HabitsStore.shared.habits.remove(at: indexPath.row)
-                self.dismisHabitDetailsComlition?()
-                self.navigationController?.dismiss(animated: true)
+            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+            let deleteAction = UIAlertAction(title:  "Удалить", style: .destructive) {[weak self] _ in
+                HabitsStore.shared.habits.removeAll(where: {$0 == self?.habit})
+                self?.navigationController?.popViewController(animated: true)
             }
             alert.addAction(cancelAction)
             alert.addAction(deleteAction)
+            self?.present(alert, animated: true)
         }
     }
     
-    @objc func save() {
+    @objc func saveHabit() {
         guard let name = habitView.habitName else {
             let alert = UIAlertController(title: "Не заполнено поле", message: "Заполните поле название", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "Ок", style: .cancel){_ in
@@ -127,24 +115,19 @@ class HabitViewController: UIViewController {
         case .addind:
             HabitsStore.shared.habits.append(newHabit)
         case .editing:
-            guard let indexPath else {return}
-            HabitsStore.shared.habits[indexPath.row].name = name
-            HabitsStore.shared.habits[indexPath.row].date = date
-            HabitsStore.shared.habits[indexPath.row].color = color
+            guard let habit else{return}
+            guard let insertIndex = HabitsStore.shared.habits.firstIndex(of: habit) else {return}
+            HabitsStore.shared.habits.remove(at: insertIndex)
+            HabitsStore.shared.habits.insert(newHabit, at: insertIndex)
+            dismisHabitDetailsComlition?()
         case .none:
             return
         }
-        dismiss(animated: true) {[weak self] in
-            self?.habitView.habitTextField.text?.removeAll()
-        }
+        dismiss(animated: true)
     }
     
     @objc func cancell() {
         dismiss(animated: true)
-        {[weak self] in
-            self?.habitView.habitColor = HabitsStore.shared.habits.last?.color ?? .red
-            self?.habitView.habitTextField.text?.removeAll()
-        }
     }
 }
 

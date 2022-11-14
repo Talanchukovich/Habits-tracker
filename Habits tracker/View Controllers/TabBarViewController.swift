@@ -31,7 +31,7 @@ class TabBarViewController: UITabBarController {
         viewControllers = [habitsViewController, infoViewController]
     }
     
-    func createNavigationController(viewController: UIViewController, title: String, imageName: String) -> UINavigationController {
+    func createNavigationController(viewController: UIViewController, title: String, imageName: String) -> UIViewController {
         let navigationController = UINavigationController(rootViewController: viewController)
         let item = UITabBarItem(title: title, image: UIImage(named: imageName), tag: 0)
         item.setTitleTextAttributes(TextAttributes.shared.tabBarAttributes, for: .normal)

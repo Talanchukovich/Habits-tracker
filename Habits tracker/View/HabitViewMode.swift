@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum HabitViewMode {
+enum HabitViewMode: Equatable {
     case addind
-    case editing
+    case editing(Habit)
 }

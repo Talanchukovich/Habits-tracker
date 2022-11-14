@@ -51,7 +51,7 @@ class HabitsViewController: UIViewController {
             image: UIImage(named: "Symbol")?.withRenderingMode(.alwaysOriginal),
             style: .done,
             target: self,
-            action: #selector(pushHabitViewController))
+            action: #selector(addHabit))
     }
     
     func createCompositionLayout() -> UICollectionViewLayout {
@@ -87,7 +87,7 @@ class HabitsViewController: UIViewController {
         return section
     }
     
-    @objc func pushHabitViewController(){
+    @objc func addHabit(){
         let habitViewController = UINavigationController(rootViewController: HabitViewController(habitMode: .addind))
         habitViewController.modalPresentationStyle = .fullScreen
         self.present(habitViewController, animated: true)
@@ -151,10 +151,12 @@ extension HabitsViewController: UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let item = collectionView.cellForItem(at: indexPath) as? HabitCollectionViewCell else {return}
         let habit = HabitsStore.shared.habits[indexPath.row]
-        let habitDetailsViewController = UINavigationController(rootViewController: HabitDetailsViewController(navigationTitle: item.habitNameLabel.text ?? "", habit: habit, indexPax: indexPath))
-        habitDetailsViewController.modalPresentationStyle = .fullScreen
-        self.present(habitDetailsViewController, animated: true)
+        let habitDetailsViewController = HabitDetailsViewController(habit: habit)
+        navigationController?.pushViewController(habitDetailsViewController, animated: true)
+        
+//        let habitDetailsViewController = UINavigationController(rootViewController: HabitDetailsViewController(navigationTitle: item.habitNameLabel.text ?? "", habit: habit))
+//        habitDetailsViewController.modalPresentationStyle = .fullScreen
+//        self.present(habitDetailsViewController, animated: true)
     }
 }
