@@ -9,8 +9,6 @@ import UIKit
 
 class HabitDetailsViewController: UIViewController {
     
-    let habitViewController = HabitViewController()
-    
     private var navigationTitle: String?
     private var habit: Habit?
     
@@ -41,9 +39,9 @@ class HabitDetailsViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = false
     }
     
+    
     func setupView() {
         view.backgroundColor = .white
-        navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.titleTextAttributes = attributes.navigationTitleAttributes
         navigationItem.title = navigationTitle
         
@@ -68,10 +66,13 @@ class HabitDetailsViewController: UIViewController {
     
     @objc func editHabit(){
         guard let habit else {return}
-        habitViewController = 
-//        let habitViewController = UINavigationController(rootViewController: HabitViewController(habitMode: .editing(habit)))
-        habitViewController.modalPresentationStyle = .fullScreen
-        self.present(habitViewController, animated: true)
+        let habitViewController = HabitViewController(habitMode: .editing(habit))
+        let habitNavViewController = UINavigationController(rootViewController: habitViewController)
+        habitNavViewController.modalPresentationStyle = .fullScreen
+        self.present(habitNavViewController, animated: true)
+        habitViewController.dismisHabitDetailsComlition = {
+            self.cancel()
+        }
     }
     
     @objc func cancel(){

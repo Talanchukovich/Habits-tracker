@@ -35,7 +35,6 @@ class HabitsViewController: UIViewController {
     
     func setupView() {
         view.backgroundColor = .white
-        navigationController?.navigationBar.backgroundColor = .white
         navigationItem.title = "Сегодня"
         
         view.addSubview(habitsCollectionView)
@@ -88,9 +87,9 @@ class HabitsViewController: UIViewController {
     }
     
     @objc func addHabit(){
-        let habitViewController = UINavigationController(rootViewController: HabitViewController(habitMode: .addind))
-        habitViewController.modalPresentationStyle = .fullScreen
-        self.present(habitViewController, animated: true)
+        let navHabitViewController = UINavigationController(rootViewController: HabitViewController(habitMode: .addind))
+        navHabitViewController.modalPresentationStyle = .fullScreen
+        self.present(navHabitViewController, animated: true)
     }
 }
 
@@ -154,9 +153,5 @@ extension HabitsViewController: UICollectionViewDataSource, UICollectionViewDele
         let habit = HabitsStore.shared.habits[indexPath.row]
         let habitDetailsViewController = HabitDetailsViewController(habit: habit)
         navigationController?.pushViewController(habitDetailsViewController, animated: true)
-        
-//        let habitDetailsViewController = UINavigationController(rootViewController: HabitDetailsViewController(navigationTitle: item.habitNameLabel.text ?? "", habit: habit))
-//        habitDetailsViewController.modalPresentationStyle = .fullScreen
-//        self.present(habitDetailsViewController, animated: true)
     }
 }

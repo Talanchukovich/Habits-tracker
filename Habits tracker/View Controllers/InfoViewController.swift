@@ -62,7 +62,6 @@ class InfoViewController: UIViewController {
     
     func setupView() {
         view.backgroundColor = .white
-        navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.titleTextAttributes = TextAttributes.shared.navigationTitleAttributes
         navigationItem.title = "Информация"
     }
@@ -84,7 +83,6 @@ class InfoViewController: UIViewController {
             infoView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             infoView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             infoView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-//            infoView.heightAnchor.constraint(equalToConstant: titleLabel.bounds.width + infoLabel.bounds.width),
             
             titleLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 16),
             titleLabel.topAnchor.constraint(equalTo: infoView.safeAreaLayoutGuide.topAnchor, constant: 22),

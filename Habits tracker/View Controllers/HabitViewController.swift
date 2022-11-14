@@ -9,7 +9,7 @@ import UIKit
 
 class HabitViewController: UIViewController {
     
-    private var dismisHabitDetailsComlition: (()->Void)?
+    var dismisHabitDetailsComlition: (()->Void)?
     private var habitMode: HabitViewMode?
     private var habit: Habit?
     private lazy var attributes = TextAttributes.shared
@@ -23,6 +23,19 @@ class HabitViewController: UIViewController {
         vc.supportsAlpha = true
         return vc
     }
+    
+    private lazy var deleteAlert : UIAlertController = {
+        let alert = UIAlertController(title: "Удалить привычку", message: "Вы хотите удалить привычку \"\(habit?.name ?? "")\"?", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        let deleteAction = UIAlertAction(title:  "Удалить", style: .destructive) {[weak self] _ in
+            HabitsStore.shared.habits.removeAll(where: {$0 == self?.habit})
+            self?.dismisHabitDetailsComlition?()
+            self?.dismiss(animated: true)
+        }
+        alert.addAction(cancelAction)
+        alert.addAction(deleteAction)
+        return alert
+    }()
     
     convenience init(habitMode: HabitViewMode) {
         self.init(nibName: nil, bundle: nil)
@@ -82,16 +95,7 @@ class HabitViewController: UIViewController {
     
     func deleteHabit() {
         habitView.deleteButtonCompletion = {[weak self] in
-            
-            guard let habitName = self?.habit?.name else {return}
-            let alert = UIAlertController(title: "Удалить привычку", message: "Вы хотите удалить привычку \"\(habitName)\"?", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
-            let deleteAction = UIAlertAction(title:  "Удалить", style: .destructive) {[weak self] _ in
-                HabitsStore.shared.habits.removeAll(where: {$0 == self?.habit})
-                self?.navigationController?.popViewController(animated: true)
-            }
-            alert.addAction(cancelAction)
-            alert.addAction(deleteAction)
+            guard let alert = self?.deleteAlert else {return}
             self?.present(alert, animated: true)
         }
     }
@@ -127,6 +131,7 @@ class HabitViewController: UIViewController {
     }
     
     @objc func cancell() {
+        dismisHabitDetailsComlition?()
         dismiss(animated: true)
     }
 }
