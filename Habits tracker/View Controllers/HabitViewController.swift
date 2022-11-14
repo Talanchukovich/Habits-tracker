@@ -123,7 +123,7 @@ class HabitViewController: UIViewController {
             guard let insertIndex = HabitsStore.shared.habits.firstIndex(of: habit) else {return}
             HabitsStore.shared.habits.remove(at: insertIndex)
             HabitsStore.shared.habits.insert(newHabit, at: insertIndex)
-            dismisHabitDetailsComlition?()
+//            dismisHabitDetailsComlition?()
         case .none:
             return
         }
@@ -131,8 +131,11 @@ class HabitViewController: UIViewController {
     }
     
     @objc func cancell() {
-        dismisHabitDetailsComlition?()
-        dismiss(animated: true)
+        dismiss(animated: true){
+            self.dismisHabitDetailsComlition?()
+        }
+//
+        
     }
 }
 

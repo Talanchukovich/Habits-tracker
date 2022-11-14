@@ -39,7 +39,6 @@ class HabitDetailsViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = false
     }
     
-    
     func setupView() {
         view.backgroundColor = .white
         navigationController?.navigationBar.titleTextAttributes = attributes.navigationTitleAttributes
@@ -56,7 +55,7 @@ class HabitDetailsViewController: UIViewController {
     
     func setupHabitDetailsTableView() {
         view.addSubview(habitDetailsTableView)
-        
+       
         NSLayoutConstraint.activate([
             habitDetailsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             habitDetailsTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -70,6 +69,7 @@ class HabitDetailsViewController: UIViewController {
         let habitNavViewController = UINavigationController(rootViewController: habitViewController)
         habitNavViewController.modalPresentationStyle = .fullScreen
         self.present(habitNavViewController, animated: true)
+//        navigationController?.popViewController(animated: true)
         habitViewController.dismisHabitDetailsComlition = {
             self.cancel()
         }
