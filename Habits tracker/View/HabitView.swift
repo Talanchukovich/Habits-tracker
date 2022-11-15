@@ -14,9 +14,7 @@ class HabitView: UIView {
         var buttonIsHidden: Bool
     }
     
-    let attributes = TextAttributes.shared
     var habitColorPickerCompletion: (()-> Void)?
-    var habitColorPickerCompletion2: (()-> Void)?
     var deleteButtonCompletion: (()-> Void)?
     var habitName: String?
     var habitDate = Date()
@@ -27,7 +25,7 @@ class HabitView: UIView {
     }
     
     private var datePickerDateString: String {
-        dateFormatter.string(from: datePicker.date)
+        TextAttributes.dateFormatter.string(from: datePicker.date)
     }
     private var dateString: String {
         "Каждый день в " + datePickerDateString
@@ -37,25 +35,25 @@ class HabitView: UIView {
         let str = NSMutableAttributedString(string: "Каждый день в " + datePickerDateString)
         let location = dateString.count - datePickerDateString.count
         let length = datePickerDateString.count
-        str.addAttributes(attributes.dateLabelAttributes, range: NSRange(location: location, length: length))
+        str.addAttributes(TextAttributes.dateLabelAttributes, range: NSRange(location: location, length: length))
         return str
     }
     
     private lazy var habitNameLabel: UILabel = {
         let label = UILabel()
         let text = "НАЗВАНИЕ"
-        label.attributedText = NSAttributedString(string: text, attributes: attributes.habitLabelAttributes)
+        label.attributedText = NSAttributedString(string: text, attributes: TextAttributes.habitLabelAttributes)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    lazy var habitTextField: UITextField = {
+    private lazy var habitTextField: UITextField = {
         let textField = UITextField()
         textField.autocapitalizationType = .sentences
         textField.clearButtonMode = .whileEditing
-        textField.defaultTextAttributes = attributes.habitTextFieldTextlAttributes
+        textField.defaultTextAttributes = TextAttributes.habitTextFieldTextlAttributes
         let text = "Бегать по утрам, спать 8 часов и т.п"
-        textField.attributedPlaceholder = NSAttributedString(string: text, attributes: attributes.habitTextFieldPlaceHolderlAttributes)
+        textField.attributedPlaceholder = NSAttributedString(string: text, attributes: TextAttributes.habitTextFieldPlaceHolderlAttributes)
         textField.addTarget(self, action: #selector(setHabitName), for: .editingChanged)
         textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -65,7 +63,7 @@ class HabitView: UIView {
     private lazy var habitColorLabel: UILabel = {
         let label = UILabel()
         let text = "ЦВЕТ"
-        label.attributedText = NSAttributedString(string: text, attributes: attributes.habitLabelAttributes)
+        label.attributedText = NSAttributedString(string: text, attributes: TextAttributes.habitLabelAttributes)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -82,7 +80,7 @@ class HabitView: UIView {
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
         let text = "ВРЕМЯ"
-        label.attributedText = NSAttributedString(string: text, attributes: attributes.habitLabelAttributes)
+        label.attributedText = NSAttributedString(string: text, attributes: TextAttributes.habitLabelAttributes)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -92,7 +90,7 @@ class HabitView: UIView {
         let attributedString = NSMutableAttributedString(string: dateString)
         let location = dateString.count - datePickerDateString.count
         let length = datePickerDateString.count
-        attributedString.addAttributes(attributes.dateLabelAttributes, range: NSRange(location: location, length: length))
+        attributedString.addAttributes(TextAttributes.dateLabelAttributes, range: NSRange(location: location, length: length))
         label.attributedText = attributeDateString
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -102,19 +100,12 @@ class HabitView: UIView {
     
     private lazy var deleteButton: UIButton = {
         let button = UIButton()
-        let attributedTitle = NSAttributedString(string: "Удалить привычку", attributes: attributes.deleteButtonAttributes)
+        let attributedTitle = NSAttributedString(string: "Удалить привычку", attributes: TextAttributes.deleteButtonAttributes)
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.isHidden = true
         button.addTarget(self, action: #selector(deleteButtonAction), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
-    }()
-    
-    lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.timeStyle = .short
-        return formatter
     }()
     
     override init(frame: CGRect) {
@@ -136,7 +127,11 @@ class HabitView: UIView {
         setHabitDate()
     }
     
-    func setupDatePicker() {
+    func showKeyboardAfterCloseAlert() {
+        habitTextField.becomeFirstResponder()
+    }
+    
+    private func setupDatePicker() {
         datePicker.datePickerMode = .time
         if #available(iOS 13.4, *) {
             datePicker.preferredDatePickerStyle = .wheels
@@ -146,7 +141,7 @@ class HabitView: UIView {
         datePicker.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func setupView() {
+    private func setupView() {
         self.backgroundColor = .systemGray6
         self.translatesAutoresizingMaskIntoConstraints = false
         let mainViewes = [habitNameLabel, habitTextField, habitColorLabel, habitColorPickerButton, dateLabel, habitDateLabel, datePicker, deleteButton]
@@ -182,23 +177,22 @@ class HabitView: UIView {
         ])
     }
     
-    @objc func setHabitDate() {
+    @objc private func setHabitDate() {
         habitDate = datePicker.date
         habitDateLabel.attributedText = attributeDateString
     }
     
-    @objc func setHabitName() {
+    @objc private func setHabitName() {
         habitName = habitTextField.text
     }
     
-    @objc func habitColorPickerButtonAction() {
+    @objc private func habitColorPickerButtonAction() {
         habitTextField.resignFirstResponder()
         habitColorPickerCompletion?()
     }
     
-    @objc func deleteButtonAction() {
+    @objc private func deleteButtonAction() {
         deleteButtonCompletion?()
-        habitColorPickerCompletion2?()
     }
 }
 

@@ -8,7 +8,7 @@
 import UIKit
 
 class HabitCollectionViewCell: UICollectionViewCell {
-    let attributes = TextAttributes.shared
+   
     var trackHabitComletision: (()->Void)?
     
     struct ViewModel {
@@ -19,7 +19,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
         var isAlreadyTakenToday: Bool
     }
     
-    lazy var habitNameLabel: UILabel = {
+    private lazy var habitNameLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +38,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var habitCircleButton: UIButton = {
+    private lazy var habitCircleButton: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 18
         button.layer.borderWidth = 2
@@ -61,14 +61,14 @@ class HabitCollectionViewCell: UICollectionViewCell {
         let habitNameLabelAttributes = [NSAttributedString.Key.font: UIFont
             .systemFont(ofSize: 17, weight: .regular) as Any,
                                         .kern: -0.41,
-                                        .paragraphStyle: paragraphStyle(lineHeightMultiple: 1.08),
+                                        .paragraphStyle: TextAttributes.paragraphStyle(lineHeightMultiple: 1.08),
                                         .foregroundColor: viewModel.color]
         let habitName = NSAttributedString(string: viewModel.name,
                                            attributes: habitNameLabelAttributes)
-        let habitDate = NSAttributedString(string: "Каждый день в " + attributes.dateFormatter.string(from: viewModel.date),
-                                           attributes: attributes.habitDateLabelCellAttributes)
+        let habitDate = NSAttributedString(string: "Каждый день в " + TextAttributes.dateFormatter.string(from: viewModel.date),
+                                           attributes: TextAttributes.habitDateLabelCellAttributes)
         let countHabit = NSAttributedString(string: "Счетчик: \(viewModel.count)",
-                                            attributes: attributes.habitCountLabelCellAttributes)
+                                            attributes: TextAttributes.habitCountLabelCellAttributes)
         var  habitCircleButtonBackgroundColor: UIColor {
             viewModel.isAlreadyTakenToday == true ? viewModel.color : .white
         }
@@ -109,7 +109,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
         habitCircleButton.backgroundColor = nil
     }
     
-    @objc func trackHabit() {
+    @objc private func trackHabit() {
         trackHabitComletision?()
         
     }

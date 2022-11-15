@@ -11,8 +11,6 @@ class HabitDetailsViewController: UIViewController {
     
     private var navigationTitle: String?
     private var habit: Habit?
-    
-    private lazy var attributes = TextAttributes.shared
     private lazy var habitDetailsTableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = UIColor(red: 0.949, green: 0.949, blue: 0.969, alpha: 1)
@@ -33,27 +31,32 @@ class HabitDetailsViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         setupHabitDetailsTableView()
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = false
     }
     
-    func setupView() {
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    private func setupView() {
         view.backgroundColor = .white
-        navigationController?.navigationBar.titleTextAttributes = attributes.navigationTitleAttributes
+        navigationController?.navigationBar.titleTextAttributes = TextAttributes.navigationTitleAttributes
         navigationItem.title = navigationTitle
         
         let arrowBackBarButton = UIBarButtonItem(customView: UIImageView(image: UIImage(named: "Arrow")))
         let textBackBarButton = UIBarButtonItem(title: "Сегодня", style: .done, target: self, action: #selector(cancel))
-        textBackBarButton.setTitleTextAttributes(attributes.cancellBarButtonItemTitleAttributes, for: .normal)
+        textBackBarButton.setTitleTextAttributes(TextAttributes.cancellBarButtonItemTitleAttributes, for: .normal)
         let rightBarButton = UIBarButtonItem(title: "Править", style: .done, target: self, action: #selector(editHabit))
-        rightBarButton.setTitleTextAttributes(attributes.cancellBarButtonItemTitleAttributes, for: .normal)
+        rightBarButton.setTitleTextAttributes(TextAttributes.cancellBarButtonItemTitleAttributes, for: .normal)
         navigationItem.leftBarButtonItems = [arrowBackBarButton, textBackBarButton]
         navigationItem.rightBarButtonItem = rightBarButton
     }
     
-    func setupHabitDetailsTableView() {
+    private func setupHabitDetailsTableView() {
         view.addSubview(habitDetailsTableView)
        
         NSLayoutConstraint.activate([
@@ -63,7 +66,7 @@ class HabitDetailsViewController: UIViewController {
             habitDetailsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)])
     }
     
-    @objc func editHabit(){
+    @objc private func editHabit(){
         guard let habit else {return}
         let habitViewController = HabitViewController(habitMode: .editing(habit))
         let habitNavViewController = UINavigationController(rootViewController: habitViewController)
@@ -75,7 +78,7 @@ class HabitDetailsViewController: UIViewController {
         }
     }
     
-    @objc func cancel(){
+    @objc private func cancel(){
         navigationController?.popViewController(animated: true)
     }
 }

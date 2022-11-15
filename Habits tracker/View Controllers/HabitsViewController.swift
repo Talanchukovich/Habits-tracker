@@ -9,7 +9,7 @@ import UIKit
 
 class HabitsViewController: UIViewController {
     
-    lazy var habitsCollectionView: UICollectionView = {
+    private lazy var habitsCollectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: createCompositionLayout())
         view.backgroundColor = .systemGray6
         view.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: "HabitCollectionViewCell")
@@ -24,16 +24,15 @@ class HabitsViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         setupRightBarButton()
-        
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.navigationBar.prefersLargeTitles = true
         habitsCollectionView.reloadData()
     }
     
-    func setupView() {
+    private func setupView() {
         view.backgroundColor = .white
         navigationItem.title = "Сегодня"
         
@@ -45,7 +44,7 @@ class HabitsViewController: UIViewController {
             habitsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)])
     }
     
-    func setupRightBarButton() {
+    private func setupRightBarButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(named: "Symbol")?.withRenderingMode(.alwaysOriginal),
             style: .done,
@@ -53,7 +52,7 @@ class HabitsViewController: UIViewController {
             action: #selector(addHabit))
     }
     
-    func createCompositionLayout() -> UICollectionViewLayout {
+    private func createCompositionLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             if sectionIndex == 0 {
                 return self.createSectionLayout(sectionIndex: sectionIndex)
@@ -63,7 +62,7 @@ class HabitsViewController: UIViewController {
         return layout
     }
     
-    func createSectionLayout(sectionIndex: Int) -> NSCollectionLayoutSection {
+    private func createSectionLayout(sectionIndex: Int) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         if sectionIndex == 1 {
@@ -78,7 +77,11 @@ class HabitsViewController: UIViewController {
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(groupHeight))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         let section = NSCollectionLayoutSection(group: group)
+        let headerSize = NSCollectionLayoutSize(widthDimension: .estimated(1.0), heightDimension: .estimated(50))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .topLeading)
+        header.pinToVisibleBounds = true
         if sectionIndex == 0 {
+            section.boundarySupplementaryItems = [header]
             section.contentInsets = .init(top: 22, leading: 16, bottom: 0, trailing: 16)
         } else {
             section.contentInsets = .init(top: 18, leading: 16, bottom: 6, trailing: 16)
@@ -86,7 +89,7 @@ class HabitsViewController: UIViewController {
         return section
     }
     
-    @objc func addHabit(){
+    @objc private func addHabit(){
         let navHabitViewController = UINavigationController(rootViewController: HabitViewController(habitMode: .addind))
         navHabitViewController.modalPresentationStyle = .fullScreen
         self.present(navHabitViewController, animated: true)
@@ -135,7 +138,7 @@ extension HabitsViewController: UICollectionViewDataSource, UICollectionViewDele
             habitCell.trackHabitComletision = {
                 if habit.isAlreadyTakenToday == false {
                     HabitsStore.shared.track(habit)
-                    habitCell.habitCircleButton.backgroundColor = habit.color
+                    habitCell.updateView(viewModel: habitViewModel)
                     collectionView.reloadData()
                 }
             }
@@ -153,5 +156,6 @@ extension HabitsViewController: UICollectionViewDataSource, UICollectionViewDele
         let habit = HabitsStore.shared.habits[indexPath.row]
         let habitDetailsViewController = HabitDetailsViewController(habit: habit)
         navigationController?.pushViewController(habitDetailsViewController, animated: true)
+       
     }
 }

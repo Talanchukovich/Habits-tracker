@@ -21,10 +21,10 @@ class InfoViewController: UIViewController {
         return view
     }()
     
-    private lazy var attributes = TextAttributes.shared
+    private lazy var attributes = TextAttributes.self
    
-    let titleLabelText = "Привычка за 21 день"
-    let ifnoLabelText = """
+    private let titleLabelText = "Привычка за 21 день"
+    private let ifnoLabelText = """
     Прохождение этапов, за которые за 21 день вырабатывается привычка, подчиняется следующему алгоритму:
     
     1. Провести 1 день без обращения\nк старым привычкам, стараться вести себя так, как будто цель, загаданная в перспективу, находится на расстоянии шага.
@@ -60,13 +60,13 @@ class InfoViewController: UIViewController {
         setupSubview()
     }
     
-    func setupView() {
+    private func setupView() {
         view.backgroundColor = .white
-        navigationController?.navigationBar.titleTextAttributes = TextAttributes.shared.navigationTitleAttributes
+        navigationController?.navigationBar.titleTextAttributes = TextAttributes.self.navigationTitleAttributes
         navigationItem.title = "Информация"
     }
     
-    func setupSubview() {
+    private func setupSubview() {
         view.addSubview(scrollView)
         scrollView.addSubview(infoView)
         infoView.addSubview(titleLabel)

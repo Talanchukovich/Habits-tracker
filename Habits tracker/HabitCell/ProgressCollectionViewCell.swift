@@ -13,16 +13,14 @@ class ProgressCollectionViewCell: UICollectionViewCell {
         var todayProgress: Float
     }
     
-    private lazy var attributes = TextAttributes.shared
-    
     private lazy var allDoneLabel: UILabel = {
         let label = UILabel()
-        label.attributedText = NSAttributedString(string: "Все получится!", attributes: attributes.allDoneLabelAttributes)
+        label.attributedText = NSAttributedString(string: "Все получится!", attributes: TextAttributes.allDoneLabelAttributes)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    lazy var progressLabel: UILabel = {
+    private lazy var progressLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -55,7 +53,7 @@ class ProgressCollectionViewCell: UICollectionViewCell {
     func updateView(viewModel: ViewModel) {
         let witdhCurrentProgressView: CGFloat = (self.bounds.width - 24) * CGFloat(viewModel.todayProgress)
         let todayProgress = "\(Int(viewModel.todayProgress * 100))%"
-        progressLabel.attributedText = NSAttributedString(string: todayProgress, attributes: attributes.allDoneLabelAttributes)
+        progressLabel.attributedText = NSAttributedString(string: todayProgress, attributes: TextAttributes.allDoneLabelAttributes)
         currentProgressView.frame = CGRect(x: 0, y: 0, width: witdhCurrentProgressView, height: 7)
     }
     
